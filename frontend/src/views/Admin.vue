@@ -109,12 +109,12 @@ onMounted(async () => {
 <template>
   <div v-if="openSettings.fetched && userSettings.fetched">
     <n-modal v-model:show="showAdminPasswordModal" :closable="false" :closeOnEsc="false" :maskClosable="false"
-      preset="dialog" :title="t('accessHeader')">
-      <p>{{ t('accessTip') }}</p>
-      <n-input v-model:value="tmpAdminAuth" type="password" show-password-on="click" @keyup.enter="authFunc" />
+      preset="dialog" :title="t('accessHeader')" :show-icon="false" style="max-width: 420px;">
+      <p class="km-modal-tip">{{ t('accessTip') }}</p>
+      <n-input v-model:value="tmpAdminAuth" type="password" show-password-on="click" size="large" @keyup.enter="authFunc" />
       <Turnstile ref="turnstileRef" v-if="openSettings.enableGlobalTurnstileCheck" v-model:value="cfToken" />
       <template #action>
-        <n-button @click="authFunc" type="primary" :loading="loading">
+        <n-button @click="authFunc" type="primary" size="large" block :loading="loading">
           {{ t('ok') }}
         </n-button>
       </template>
@@ -251,6 +251,11 @@ onMounted(async () => {
 </template>
 
 <style scoped>
+.km-modal-tip {
+  margin: 0 0 var(--km-space-3);
+  color: var(--km-muted);
+}
+
 .n-pagination {
   margin-top: 10px;
   margin-bottom: 10px;
