@@ -40,7 +40,7 @@ onMounted(async () => {
             <n-skeleton style="height: 50vh" />
         </n-card>
         <div v-else-if="settings.address">
-            <n-alert type="info" :show-icon="false" :bordered="false">
+            <div class="km-address-strip">
                 <AddressSelect>
                     <template #actions>
                         <n-button class="address-manage" size="small" tertiary type="primary"
@@ -50,7 +50,7 @@ onMounted(async () => {
                         </n-button>
                     </template>
                 </AddressSelect>
-            </n-alert>
+            </div>
         </div>
         <div v-else-if="isTelegram">
             <TelegramAddress />
@@ -60,14 +60,18 @@ onMounted(async () => {
                 <AddressManagement />
             </n-card>
         </div>
-        <div v-else class="center">
-            <n-card :bordered="false" embedded style="max-width: 600px;">
+        <div v-else class="center km-welcome">
+            <div class="km-hero">
+                <h1>{{ t('heroTitle') }}</h1>
+                <p>{{ t('heroSubtitle') }}</p>
+            </div>
+            <n-card :bordered="false" embedded class="km-login-card">
                 <n-alert v-if="jwt" type="warning" :show-icon="false" :bordered="false" closable>
                     <span>{{ t('fetchAddressError') }}</span>
                 </n-alert>
                 <Login />
                 <n-divider />
-                <n-button @click="onUserLogin" type="primary" block secondary strong>
+                <n-button @click="onUserLogin" size="large" block quaternary strong>
                     <template #icon>
                         <n-icon :component="User" />
                     </template>
@@ -105,9 +109,54 @@ onMounted(async () => {
     margin: 20px;
 }
 
+.km-welcome {
+    flex-direction: column;
+    margin: var(--km-space-5) 0 var(--km-space-6);
+}
+
+.km-hero {
+    max-width: 560px;
+    margin-bottom: var(--km-space-5);
+    text-align: center;
+}
+
+.km-hero h1 {
+    margin: 0 0 var(--km-space-2);
+    font: 800 clamp(30px, 6vw, 44px)/1.05 var(--km-font-display);
+    letter-spacing: -0.03em;
+}
+
+.km-hero p {
+    margin: 0;
+    color: var(--km-muted);
+    font-size: 17px;
+}
+
+.km-login-card {
+    width: 100%;
+    max-width: 520px;
+}
+
+.km-address-strip {
+    margin: var(--km-space-2) 0 var(--km-space-4);
+    padding: var(--km-space-3) var(--km-space-4);
+    border: 1px solid var(--km-line-soft);
+    border-radius: var(--km-radius-lg);
+    background: var(--km-surface);
+}
+
 .address-manage {
     flex: 0 0 auto;
     white-space: nowrap;
 }
 
+@media (max-width: 640px) {
+    .km-welcome {
+        margin: var(--km-space-3) 0 var(--km-space-5);
+    }
+
+    .km-hero p {
+        font-size: 15px;
+    }
+}
 </style>

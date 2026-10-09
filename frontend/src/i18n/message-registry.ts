@@ -1491,7 +1491,9 @@ export const MESSAGE_REGISTRY = {
     "userCenter": {
       "en": "User center",
       "zh": "用户中心"
-    }
+    },
+    "heroTitle": { "en": "Your inbox, on demand.", "zh": "随取随用的邮箱。" },
+    "heroSubtitle": { "en": "Create a private address in seconds, or log in to one you already have.", "zh": "几秒钟创建一个私密地址，或登录已有的邮箱。" }
   },
   "views.admin.SendBox": {
     "query": {
@@ -2875,11 +2877,11 @@ export const MESSAGE_REGISTRY = {
       "zh": "生成随机名字"
     },
     "getNewEmail": {
-      "en": "Create email address",
+      "en": "Create address",
       "zh": "创建邮箱"
     },
     "useRedeemCode": {
-      "en": "Use Redemption Code",
+      "en": "Use a redemption code",
       "zh": "使用兑换码"
     },
     "redeemEntryTip": {
@@ -2907,7 +2909,7 @@ export const MESSAGE_REGISTRY = {
       "zh": "帮助"
     },
     "login": {
-      "en": "Log in to mailbox",
+      "en": "Log in",
       "zh": "登录邮箱"
     },
     "loginAndBind": {
@@ -2927,7 +2929,7 @@ export const MESSAGE_REGISTRY = {
       "zh": "密码登录"
     },
     "pleaseGetNewEmail": {
-      "en": "Please log in or click \"Create email address\" to get a new email address",
+      "en": "Log in, or choose \"Create address\" to get a new email address.",
       "zh": "请\"登录\"或点击 \"注册新邮箱\" 按钮来获取一个新的邮箱地址"
     },
     "randomSubdomainTip": {

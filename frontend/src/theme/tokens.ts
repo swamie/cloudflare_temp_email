@@ -24,6 +24,9 @@ export const palette = {
     info: '#a6a3f7',
     glow: 'rgba(150, 70, 255, 0.22)',
     grid: 'rgba(205, 170, 255, 0.06)',
+    segment: '#3c3153',
+    secondary: 'rgba(205, 170, 255, 0.08)',
+    secondaryHover: 'rgba(205, 170, 255, 0.14)',
   },
   light: {
     bg: '#fbf9fe',
@@ -46,6 +49,9 @@ export const palette = {
     info: '#6358ba',
     glow: 'rgba(150, 90, 230, 0.10)',
     grid: 'rgba(110, 60, 180, 0.05)',
+    segment: '#ffffff',
+    secondary: 'rgba(128, 68, 203, 0.07)',
+    secondaryHover: 'rgba(128, 68, 203, 0.12)',
   },
 } as const
 
@@ -101,11 +107,11 @@ export const themeOverrides = (mode: Mode): GlobalThemeOverrides => {
       heightMedium: layout.control,
       heightLarge: layout.controlLarge,
     },
-    Button: { fontWeight: '600', textColorPrimary: c.onAccent, textColorHoverPrimary: c.onAccent, textColorPressedPrimary: c.onAccent, textColorFocusPrimary: c.onAccent },
+    Button: { fontWeight: '600', colorSecondary: c.secondary, colorSecondaryHover: c.secondaryHover, colorSecondaryPressed: c.secondaryHover, textColorPrimary: c.onAccent, textColorHoverPrimary: c.onAccent, textColorPressedPrimary: c.onAccent, textColorFocusPrimary: c.onAccent },
     Card: { color: c.surface, colorEmbedded: c.surface, colorModal: c.raised, borderColor: c.lineSoft, borderRadius: radius.lg, titleFontWeight: '700', titleFontSizeMedium: font.lg },
     Layout: { color: 'transparent', headerColor: 'transparent' },
     List: { color: 'transparent', colorHover: c.accentSoft, borderColor: c.lineSoft },
-    Tabs: { tabFontWeightActive: '700', tabTextColorActiveCard: c.accent, tabColor: 'transparent', tabBorderColor: c.lineSoft, colorSegment: c.raised, tabBorderRadius: radius.md },
+    Tabs: { tabFontWeightActive: '700', tabTextColorActiveCard: c.accent, tabColor: 'transparent', tabBorderColor: c.lineSoft, colorSegment: c.raised, tabColorSegment: c.segment, tabBorderRadius: radius.md },
     Tag: { borderRadius: radius.sm },
     Alert: { borderRadius: radius.md },
     Dialog: { borderRadius: radius.lg },
