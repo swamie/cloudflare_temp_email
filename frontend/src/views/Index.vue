@@ -113,7 +113,7 @@ onMounted(() => {
     </div>
     <div v-else>
       <AddressBar />
-      <n-tabs v-if="settings.address" type="card" v-model:value="indexTab" :placement="globalTabplacement">
+      <n-tabs v-if="settings.address" type="line" class="km-main-tabs" v-model:value="indexTab" :placement="globalTabplacement">
         <template #prefix v-if="!isMobile">
           <n-button @click="useSimpleIndex = true" tertiary size="small">
             <template #icon>

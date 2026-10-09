@@ -55,13 +55,19 @@ h1, h2, h3, h4,
   box-shadow: 0 24px 64px rgba(0, 0, 0, 0.35);
 }
 
-/* top-level tabs: a pill bar */
-.n-tabs.n-tabs--card-type > .n-tabs-nav {
+/* top-level tabs (inbox, user center, admin): underline bar */
+.km-main-tabs > .n-tabs-nav {
   margin-bottom: var(--km-space-4);
 }
 
-.n-tabs .n-tabs-nav--card-type .n-tabs-tab {
-  border-radius: var(--km-radius-md) var(--km-radius-md) 0 0;
+.km-main-tabs > .n-tabs-nav .n-tabs-tab {
+  padding: 10px 2px;
+  font-weight: 600;
+  color: var(--km-muted);
+}
+
+.km-main-tabs > .n-tabs-nav .n-tabs-tab--active {
+  color: var(--km-text);
 }
 
 .n-tabs .n-tabs-nav--bar-type {

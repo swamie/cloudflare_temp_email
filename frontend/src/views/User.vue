@@ -22,7 +22,7 @@ const { t: userMailT } = useScopedI18n('views.user.UserSendBox')
 <template>
     <div>
         <UserBar />
-        <n-tabs v-if="userSettings.user_email" type="card" v-model:value="userTab" :placement="globalTabplacement">
+        <n-tabs v-if="userSettings.user_email" type="line" class="km-main-tabs" v-model:value="userTab" :placement="globalTabplacement">
             <n-tab-pane name="address_management" :tab="t('address_management')">
                 <AddressMangement />
             </n-tab-pane>

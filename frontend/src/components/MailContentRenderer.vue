@@ -129,19 +129,12 @@ const handleSaveToS3 = async (filename, blob) => {
 <template>
   <div class="mail-content-renderer">
     <!-- 邮件信息标签 -->
-    <n-space>
-      <n-tag type="info">
-        ID: {{ mail.id }}
-      </n-tag>
-      <n-tag type="info">
-        {{ utcToLocalDate(mail.created_at, useUTCDate.value) }}
-      </n-tag>
-      <n-tag type="info">
-        FROM: {{ mail.source }}
-      </n-tag>
-      <n-tag v-if="showEMailTo" type="info">
-        TO: {{ mail.address }}
-      </n-tag>
+    <div class="km-meta">
+      <div class="km-meta__line"><span class="km-meta__label">From</span>{{ mail.source }}</div>
+      <div v-if="showEMailTo" class="km-meta__line"><span class="km-meta__label">To</span>{{ mail.address }}</div>
+      <div class="km-meta__sub">{{ utcToLocalDate(mail.created_at, useUTCDate.value) }} · ID {{ mail.id }}</div>
+    </div>
+    <n-space class="km-actions">
 
       <!-- 操作按钮 -->
       <n-popconfirm v-if="enableUserDeleteEmail" @positive-click="handleDelete">
@@ -272,6 +265,34 @@ const handleSaveToS3 = async (filename, blob) => {
   display: flex;
   flex-direction: column;
   gap: 10px;
+}
+
+.km-meta {
+  display: grid;
+  gap: 2px;
+  padding-bottom: var(--km-space-3);
+  border-bottom: 1px solid var(--km-line-soft);
+}
+
+.km-meta__line {
+  overflow-wrap: anywhere;
+}
+
+.km-meta__label {
+  display: inline-block;
+  min-width: 44px;
+  color: var(--km-faint);
+  font-size: 13px;
+}
+
+.km-meta__sub {
+  color: var(--km-faint);
+  font-size: 13px;
+  font-variant-numeric: tabular-nums;
+}
+
+.km-actions :deep(.n-button) {
+  --n-height: 32px !important;
 }
 
 /* Let the banner's inner space fill the alert so the button sits on the right. */

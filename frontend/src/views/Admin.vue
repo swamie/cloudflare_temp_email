@@ -119,7 +119,7 @@ onMounted(async () => {
         </n-button>
       </template>
     </n-modal>
-    <n-tabs v-if="showAdminPage" type="card" v-model:value="adminTab" :placement="globalTabplacement">
+    <n-tabs v-if="showAdminPage" type="line" class="km-main-tabs" v-model:value="adminTab" :placement="globalTabplacement">
       <n-tab-pane name="qucickSetup" :tab="t('qucickSetup')">
         <n-tabs key="quick-setup-tabs" type="bar" justify-content="center" animated>
           <n-tab-pane name="database" :tab="t('database')">
