@@ -1042,7 +1042,9 @@ export const MESSAGE_REGISTRY = {
     "fetchUserSettingsError": {
       "en": "The login password is invalid or the account does not exist. This may also be a network issue; please try again later.",
       "zh": "登录信息已过期或账号不存在，也可能是网络连接异常，请稍后再尝试。"
-    }
+    },
+    "heroTitle": { "en": "Your account", "zh": "我的账户" },
+    "heroSubtitle": { "en": "Log in to keep all your addresses in one place.", "zh": "登录后可集中管理你的所有邮箱地址。" }
   },
   "views.user.AddressManagement": {
     "actions": {
