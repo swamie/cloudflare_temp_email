@@ -6,7 +6,7 @@ export type { SupportedLocale } from './locale-registry'
 
 import type { SupportedLocale } from './locale-registry'
 
-export const FALLBACK_LOCALE: SupportedLocale = 'zh'
+export const FALLBACK_LOCALE: SupportedLocale = 'en'
 export const PREFERRED_LOCALE_STORAGE_KEY = 'preferredLocale'
 export const EMPTY_LOCALE_MESSAGES = Object.fromEntries(
   SUPPORTED_LOCALES.map((supportedLocale) => [supportedLocale, {}]),

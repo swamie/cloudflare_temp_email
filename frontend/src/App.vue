@@ -13,6 +13,7 @@ import { api } from './api'
 import { getNaiveLocaleConfig } from './i18n/naive-locale'
 import { DEFAULT_LOCALE, isSupportedLocale } from './i18n/utils'
 import { APP_CONFIG } from './config'
+import { themeOverrides, cssVars } from './theme/tokens'
 
 const {
   isDark, loading, useSideMargin, telegramApp, isTelegram
@@ -21,11 +22,20 @@ const adClient = APP_CONFIG.GOOGLE_AD_CLIENT;
 const adSlot = APP_CONFIG.GOOGLE_AD_SLOT;
 const { locale } = useI18n({ useScope: 'global' });
 const theme = computed(() => isDark.value ? darkTheme : null)
+const overrides = computed(() => themeOverrides(isDark.value ? 'dark' : 'light'))
 const localeConfig = computed(() => getNaiveLocaleConfig(isSupportedLocale(locale.value) ? locale.value : DEFAULT_LOCALE))
 const isMobile = useIsMobile()
 const showSideMargin = computed(() => !isMobile.value && useSideMargin.value);
 const showAd = computed(() => !isMobile.value && adClient && adSlot);
 const gridMaxCols = computed(() => showAd.value ? 8 : 12);
+
+watchEffect(() => {
+  if (typeof document === 'undefined') return
+  for (const [k, v] of Object.entries(cssVars(isDark.value ? 'dark' : 'light'))) {
+    document.documentElement.style.setProperty(k, v)
+  }
+  document.documentElement.style.colorScheme = isDark.value ? 'dark' : 'light'
+})
 
 watchEffect(() => {
   if (typeof document === 'undefined') return
@@ -88,36 +98,30 @@ onMounted(async () => {
 </script>
 
 <template>
-  <n-config-provider :locale="localeConfig.locale" :date-locale="localeConfig.dateLocale" :theme="theme">
+  <n-config-provider :locale="localeConfig.locale" :date-locale="localeConfig.dateLocale" :theme="theme"
+    :theme-overrides="overrides">
     <n-global-style />
-    <n-spin description="loading..." :show="loading">
-      <n-notification-provider container-style="margin-top: 60px;">
-        <n-message-provider container-style="margin-top: 20px;">
-          <n-grid x-gap="12" :cols="gridMaxCols">
-            <n-gi v-if="showSideMargin" span="1">
-              <div class="side" v-if="showAd">
-                <ins class="adsbygoogle" style="display:block" :data-ad-client="adClient" :data-ad-slot="adSlot"
-                  data-ad-format="auto" data-full-width-responsive="true"></ins>
-              </div>
-            </n-gi>
-            <n-gi :span="!showSideMargin ? gridMaxCols : (gridMaxCols - 2)">
-              <div class="main">
-                <n-space vertical>
-                  <n-layout style="min-height: 80vh;">
-                    <Header />
-                    <router-view></router-view>
-                  </n-layout>
-                  <Footer />
-                </n-space>
-              </div>
-            </n-gi>
-            <n-gi v-if="showSideMargin" span="1">
-              <div class="side" v-if="showAd">
-                <ins class="adsbygoogle" style="display:block" :data-ad-client="adClient" :data-ad-slot="adSlot"
-                  data-ad-format="auto" data-full-width-responsive="true"></ins>
-              </div>
-            </n-gi>
-          </n-grid>
+    <div class="km-backdrop" aria-hidden="true"></div>
+    <n-spin description="Loading…" :show="loading" class="km-spin">
+      <n-notification-provider container-style="margin-top: 64px;">
+        <n-message-provider container-style="margin-top: 16px;">
+          <div class="km-page" :class="{ 'km-page--ads': showAd, 'km-page--wide': !showSideMargin }">
+            <aside v-if="showAd" class="km-ad">
+              <ins class="adsbygoogle" style="display:block" :data-ad-client="adClient" :data-ad-slot="adSlot"
+                data-ad-format="auto" data-full-width-responsive="true"></ins>
+            </aside>
+            <div class="km-shell">
+              <Header />
+              <main class="km-main">
+                <router-view></router-view>
+              </main>
+              <Footer />
+            </div>
+            <aside v-if="showAd" class="km-ad">
+              <ins class="adsbygoogle" style="display:block" :data-ad-client="adClient" :data-ad-slot="adSlot"
+                data-ad-format="auto" data-full-width-responsive="true"></ins>
+            </aside>
+          </div>
           <n-back-top />
         </n-message-provider>
       </n-notification-provider>
@@ -125,43 +129,68 @@ onMounted(async () => {
   </n-config-provider>
 </template>
 
-
 <style>
-.n-switch {
-  margin-left: 10px;
-  margin-right: 10px;
-}
-
-@media (hover: none) and (pointer: coarse) and (max-width: 1024px) {
-  :where(input, textarea, select, [contenteditable="true"]) {
-    font-size: 16px !important;
-  }
-
-  :where(.n-input, .n-input-number, .n-base-selection, .n-input-group-label) {
-    --n-font-size: 16px !important;
-  }
-}
+@import './theme/base.css';
 </style>
 
 <style scoped>
-.side {
+.km-backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  background:
+    radial-gradient(40rem 30rem at 85% -10%, var(--km-glow), transparent 70%),
+    linear-gradient(var(--km-grid) 1px, transparent 1px) 0 0 / 56px 56px,
+    linear-gradient(90deg, var(--km-grid) 1px, transparent 1px) 0 0 / 56px 56px;
+  mask-image: linear-gradient(to bottom, #000 0, #000 40%, transparent 90%);
+}
+
+.km-spin {
+  position: relative;
+  z-index: 1;
+}
+
+.km-page {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  justify-content: center;
+  gap: var(--km-space-4);
+  min-height: 100vh;
+  padding: 0 var(--km-space-5);
+}
+
+.km-page--ads {
+  grid-template-columns: 160px minmax(0, var(--km-max-width)) 160px;
+}
+
+.km-shell {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  max-width: var(--km-max-width);
+  min-height: 100vh;
+  margin: 0 auto;
+}
+
+.km-page--wide .km-shell {
+  max-width: none;
+}
+
+.km-main {
+  flex: 1;
+  padding-bottom: var(--km-space-6);
+}
+
+.km-ad {
+  position: sticky;
+  top: 0;
   height: 100vh;
 }
 
-.main {
-  height: 100vh;
-  text-align: center;
-}
-
-.n-grid {
-  height: 100%;
-}
-
-.n-gi {
-  height: 100%;
-}
-
-.n-space {
-  height: 100%;
+@media (max-width: 768px) {
+  .km-page {
+    padding: 0 var(--km-space-3);
+  }
 }
 </style>

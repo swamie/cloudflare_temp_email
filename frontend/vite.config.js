@@ -46,14 +46,15 @@ export default defineConfig({
         cleanupOutdatedCaches: true,
       },
       manifest: {
-        name: 'Temp Email',
-        short_name: 'Temp Email',
-        description: 'Temp Email - Temporary Email',
-        theme_color: '#ffffff',
+        name: 'Kimolo Mail',
+        short_name: 'Kimolo Mail',
+        description: 'Kimolo Mail: private, disposable email addresses',
+        theme_color: '#110c1d',
+        background_color: '#110c1d',
         icons: [
           {
             src: '/logo.png',
-            sizes: '192x192',
+            sizes: '512x512',
             type: 'image/png'
           }
         ]
