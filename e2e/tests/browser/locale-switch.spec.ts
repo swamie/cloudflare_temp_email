@@ -36,14 +36,14 @@ const selectLanguage = async (page: Page, selectTrigger: Locator, optionLabel: s
 };
 
 test.describe('Locale switching', () => {
-  test('keeps default route in Chinese while persisting browser language preference', async ({ page }) => {
+  test('keeps default route in English while persisting browser language preference', async ({ page }) => {
     await installLocaleInitScript(page, ['es-ES', 'en-US']);
 
     await page.goto(`${FRONTEND_URL}/`);
 
     await expect(page).toHaveURL(`${FRONTEND_URL}/`);
     await expect.poll(() => page.evaluate(() => window.localStorage.getItem('preferredLocale'))).toBe('es');
-    await expect.poll(() => page.evaluate(() => document.documentElement.lang)).toBe('zh');
+    await expect.poll(() => page.evaluate(() => document.documentElement.lang)).toBe('en');
   });
 
   test('mobile drawer switch updates locale route and persisted preference', async ({ page }) => {

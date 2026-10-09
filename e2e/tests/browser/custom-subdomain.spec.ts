@@ -6,7 +6,7 @@ test('create an address with a custom subdomain from the UI', async ({ page, req
 
   try {
     await page.goto(`${FRONTEND_URL}/en/`);
-    await page.getByRole('button', { name: 'Create Email Address' }).click();
+    await page.getByRole('button', { name: 'Create address' }).click();
 
     const name = `subui${Date.now()}`;
     const createForm = page.locator('.n-tab-pane:visible form');
@@ -16,27 +16,27 @@ test('create an address with a custom subdomain from the UI', async ({ page, req
     await expect(domainSelect.locator('input')).toHaveCount(0);
 
     const normalSubdomain = createForm.getByRole('radio', { name: 'Normal Domain' });
-    const randomSubdomain = createForm.getByRole('radio', { name: 'Use Random Subdomain' });
-    const customSubdomain = createForm.getByRole('radio', { name: 'Use Custom Subdomain' });
+    const randomSubdomain = createForm.getByRole('radio', { name: 'Use random subdomain' });
+    const customSubdomain = createForm.getByRole('radio', { name: 'Use custom subdomain' });
 
     await expect(normalSubdomain).toBeChecked();
-    await createForm.getByText('Use Random Subdomain', { exact: true }).click();
+    await createForm.getByText('Use random subdomain', { exact: true }).click();
     await expect(normalSubdomain).not.toBeChecked();
     await expect(randomSubdomain).toBeChecked();
     await expect(customSubdomain).not.toBeChecked();
 
-    await createForm.getByText('Use Custom Subdomain', { exact: true }).click();
+    await createForm.getByText('Use custom subdomain', { exact: true }).click();
     await expect(randomSubdomain).not.toBeChecked();
     await expect(customSubdomain).toBeChecked();
 
-    await createForm.getByText('Use Random Subdomain', { exact: true }).click();
+    await createForm.getByText('Use random subdomain', { exact: true }).click();
     await expect(randomSubdomain).toBeChecked();
     await expect(customSubdomain).not.toBeChecked();
 
-    await createForm.getByText('Use Custom Subdomain', { exact: true }).click();
+    await createForm.getByText('Use custom subdomain', { exact: true }).click();
     await createForm.locator('.n-input-group:visible .n-input input').last().fill('team');
 
-    await createForm.getByRole('button', { name: 'Create Email Address' }).click();
+    await createForm.getByRole('button', { name: 'Create address' }).click();
 
     const domain = `team.${TEST_DOMAIN}`;
     const address = `tmp${name}@${domain}`;

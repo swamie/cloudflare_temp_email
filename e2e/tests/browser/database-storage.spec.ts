@@ -19,8 +19,8 @@ test('persists the selected D1 plan and restores it after reload', async ({ page
   const storagePanel = page.locator('.storage-panel');
   const planSelect = storagePanel.locator('.plan-select .n-select');
 
-  await expect(storagePanel.getByText('Current Database Size', { exact: true })).toBeVisible();
-  await expect(storagePanel.getByText('Database Capacity Limit', { exact: true })).toBeVisible();
+  await expect(storagePanel.getByText('Current database size', { exact: true })).toBeVisible();
+  await expect(storagePanel.getByText('Database capacity limit', { exact: true })).toBeVisible();
   await expect(storagePanel.getByText('Capacity Usage', { exact: true })).toBeVisible();
   await expect(planSelect).toContainText('Free');
 

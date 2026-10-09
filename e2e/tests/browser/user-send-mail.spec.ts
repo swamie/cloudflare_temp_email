@@ -74,7 +74,7 @@ test.describe('User send mail page', () => {
           === `/user_api/bind_address_jwt/${address.address_id}`
       ));
       const addressRow = page.getByRole('row').filter({ hasText: address.address });
-      await addressRow.getByRole('button', { name: 'Address Credential' }).click();
+      await addressRow.getByRole('button', { name: 'Address credential' }).click();
       expect((await credentialResponse).ok()).toBe(true);
       await expect(page.getByRole('dialog')).toContainText(address.address);
       await page.getByRole('button', { name: 'close' }).click();
@@ -83,7 +83,7 @@ test.describe('User send mail page', () => {
         new URL(response.url()).pathname
           === `/user_api/address/${secondAddress.address_id}/settings`
       ));
-      await page.getByText('Send Mail', { exact: true }).click();
+      await page.getByText('Send email', { exact: true }).click();
       expect((await initialSettingsResponse).ok()).toBe(true);
       await expect(page.locator('.composer-title h2')).toHaveText('Compose email');
 

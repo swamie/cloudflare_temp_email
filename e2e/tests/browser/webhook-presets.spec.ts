@@ -20,7 +20,7 @@ test.describe('Webhook Presets', () => {
       await page.goto(`${FRONTEND_URL}/en/?jwt=${jwt}`);
 
       // Click "Webhook Settings" in the sidebar menu
-      const webhookMenu = page.getByText('Webhook Settings');
+      const webhookMenu = page.getByText('Webhook settings');
       await expect(webhookMenu).toBeVisible({ timeout: 10_000 });
       await webhookMenu.click();
 

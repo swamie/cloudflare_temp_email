@@ -38,7 +38,7 @@ test.describe('Send mail composer', () => {
       await requestSendAccess(api, jwt);
 
       await page.goto(`${FRONTEND_URL}/en/?jwt=${jwt}`);
-      await page.getByText('Send Mail', { exact: true }).click();
+      await page.getByText('Send email', { exact: true }).click();
 
       await expect(page.getByRole('heading', { name: 'Compose email', exact: true })).toBeVisible();
       await expect(page.locator('.composer-title')).toContainText(created.address);
@@ -116,7 +116,7 @@ test.describe('Send mail composer', () => {
       sessionStorage.setItem('adminTab', 'mails');
     });
     await page.goto(`${FRONTEND_URL}/en/admin`);
-    await page.getByText('Send Mail', { exact: true }).click();
+    await page.getByText('Send email', { exact: true }).click();
 
     await expect(page.getByRole('heading', { name: 'Compose email', exact: true })).toBeVisible();
     const expectedFieldOrder = [

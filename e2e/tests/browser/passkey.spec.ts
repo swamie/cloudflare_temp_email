@@ -63,10 +63,10 @@ test.describe('Passkey Browser Flow', () => {
       await expect(page.getByText(TEST_USER_EMAIL)).toBeVisible({ timeout: 15_000 });
 
       // === Step 2: Click "User Settings" tab ===
-      await page.getByText('User Settings').click();
+      await page.getByText('User settings').click();
 
       // === Step 3: Create a passkey ===
-      await page.getByRole('button', { name: 'Create Passkey' }).click();
+      await page.getByRole('button', { name: 'Create passkey' }).click();
 
       // Fill passkey name in the modal
       const createModal = page.locator('.n-dialog');
@@ -74,32 +74,32 @@ test.describe('Passkey Browser Flow', () => {
       await createModal.getByRole('textbox').fill('E2E Test Passkey');
 
       // Click the Create Passkey button inside the modal
-      await createModal.getByRole('button', { name: 'Create Passkey' }).click();
+      await createModal.getByRole('button', { name: 'Create passkey' }).click();
 
       // Wait for success — modal should close
       await expect(createModal).not.toBeVisible({ timeout: 10_000 });
 
       // === Step 4: Verify passkey appears in the list ===
-      await page.getByRole('button', { name: 'Show Passkey List' }).click();
+      await page.getByRole('button', { name: 'Show passkey list' }).click();
 
-      const listModal = page.locator('.n-card-header:has-text("Show Passkey List")').locator('..');
+      const listModal = page.locator('.n-card-header:has-text("Show passkey list")').locator('..');
       await expect(page.getByText('E2E Test Passkey')).toBeVisible({ timeout: 5_000 });
 
       // Close the list modal
       await page.keyboard.press('Escape');
 
       // === Step 5: Logout ===
-      await page.getByRole('button', { name: 'Logout' }).click();
+      await page.getByRole('button', { name: 'Log out' }).click();
       const logoutModal = page.locator('.n-dialog');
       await expect(logoutModal).toBeVisible({ timeout: 5_000 });
-      await logoutModal.getByRole('button', { name: 'Logout' }).click();
+      await logoutModal.getByRole('button', { name: 'Log out' }).click();
 
       // Wait for logout to complete and navigate to user page
       await page.waitForTimeout(2000);
       await page.goto(`${FRONTEND_URL}/en/user`);
 
       // === Step 6: Login with passkey ===
-      const passkeyBtn = page.getByRole('button', { name: 'Login with Passkey' });
+      const passkeyBtn = page.getByRole('button', { name: 'Log in with passkey' });
       await expect(passkeyBtn).toBeVisible({ timeout: 10_000 });
       await passkeyBtn.click();
 
