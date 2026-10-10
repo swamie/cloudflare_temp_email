@@ -92,7 +92,7 @@ test('the mailbox entry opens the pure redemption page and completes role redemp
     await page.goto(`${FRONTEND_URL}/en/`);
     await expect(page.getByTestId('redeem-entry')).toBeVisible();
     await page.getByTestId('redeem-entry').click();
-    await expect(page).toHaveURL(/\/en\/redeem$/);
+    await expect(page).toHaveURL(/(?<!\/en)\/redeem$/); // English is the default locale, so no /en prefix
     await expect(page.getByTestId('redeem-code-link')).toHaveAttribute(
       'href', 'https://example.com/redeem-codes',
     );
@@ -144,7 +144,7 @@ test('sending credits defaults to the current mailbox and keeps the target edita
     await page.goto(`${FRONTEND_URL}/en/`);
     await expect(page.getByTestId('redeem-entry')).toBeVisible();
     await page.getByTestId('redeem-entry').click();
-    await expect(page).toHaveURL(/\/en\/redeem$/);
+    await expect(page).toHaveURL(/(?<!\/en)\/redeem$/); // English is the default locale, so no /en prefix
     await page.evaluate((jwt) => localStorage.setItem('jwt', jwt), address.jwt);
     const settingsResponse = page.waitForResponse((response) => (
       new URL(response.url()).pathname === '/api/settings'
@@ -332,7 +332,7 @@ test('Admin ignores a stale list response after switching redemption type', asyn
 for (const { locale, roleRequired, roleType, addressType, create, generate, prefixError } of [
   {
     locale: 'en', roleRequired: 'Select a role', roleType: 'Role benefits',
-    addressType: 'Custom mailbox', create: 'Batch Generate', generate: 'Generate',
+    addressType: 'Custom mailbox', create: 'Batch generate', generate: 'Generate',
     prefixError: 'Use only letters and digits, up to 29 characters. Leave empty for no prefix.',
   },
   {
@@ -383,5 +383,5 @@ test('the disabled frontend hides the entry and redirects the page', async ({ pa
   });
   await page.goto(`${FRONTEND_URL_ENV_OFF}/en/admin`);
   await expect(page.getByTestId('redeem-admin-create')).toHaveCount(0);
-  await expect(page.getByText('Redemption Codes', { exact: true })).toHaveCount(0);
+  await expect(page.getByText('Redemption codes', { exact: true })).toHaveCount(0);
 });

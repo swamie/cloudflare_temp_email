@@ -3,7 +3,7 @@ import { FRONTEND_URL } from '../../fixtures/test-helpers';
 
 for (const [locale, mails, webhook, testLabel, specified, mailId, invalid] of [
   ['zh', '邮件', '邮件 Webhook', '测试', '指定 ID', '邮件 ID', '请输入有效的正整数邮件 ID'],
-  ['en', 'Emails', 'Mail Webhook', 'Test', 'Specify ID', 'Email ID', 'Enter a valid positive integer email ID'],
+  ['en', 'Emails', 'Email webhook', 'Test', 'Specify ID', 'Email ID', 'Enter a valid positive integer email ID'],
   ['es', 'Correos', 'Webhook de correo', 'Prueba', 'Especificar ID', 'ID del correo', 'Introduce un ID de correo válido que sea un entero positivo'],
   ['pt-BR', 'E-mails', 'Webhook de e-mail', 'Teste', 'Especificar ID', 'ID do e-mail', 'Digite um ID de e-mail válido que seja um número inteiro positivo'],
   ['ja', 'メール', 'メールWebhook', 'テスト', 'ID を指定', 'メール ID', '有効な正の整数のメール ID を入力してください'],

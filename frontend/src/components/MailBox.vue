@@ -371,7 +371,7 @@ onBeforeUnmount(() => {
 <template>
   <div>
     <div v-if="!isMobile" class="left">
-      <div style="margin-bottom: 10px;">
+      <div class="km-toolbar">
         <n-space v-if="multiActionMode" align="center">
           <n-button @click="multiActionModeClick(false)" tertiary>
             {{ t('cancelMultiAction') }}
@@ -425,34 +425,25 @@ onBeforeUnmount(() => {
           </div>
         </template>
         <template #1>
-          <div style="overflow: auto; min-height: 60vh; max-height: 100vh;">
+          <div class="km-list" style="overflow: auto; min-height: 60vh; max-height: calc(100vh - 160px);">
             <n-list hoverable clickable>
               <n-list-item v-for="row in data" v-bind:key="row.id" @click="() => clickRow(row)"
                 :class="[mailItemClass(row), { 'mail-list-unread': enableMailReadStatus && row.is_unread === 1 }]">
                 <template #prefix v-if="multiActionMode">
                   <n-checkbox v-model:checked="row.checked" />
                 </template>
-                <n-thing :title="row.subject">
-                  <template #description>
-                    <n-tag type="info">
-                      ID: {{ row.id }}
-                    </n-tag>
-                    <n-tag type="info">
-                      {{ utcToLocalDate(row.created_at, useUTCDate) }}
-                    </n-tag>
-                    <n-tag type="info">
-                      <n-ellipsis style="max-width: 240px;">
-                        {{ showEMailTo ? "FROM: " + row.source : row.source }}
-                      </n-ellipsis>
-                    </n-tag>
-                    <n-tag v-if="showEMailTo" type="info">
-                      <n-ellipsis style="max-width: 240px;">
-                        TO: {{ row.address }}
-                      </n-ellipsis>
-                    </n-tag>
+                <div class="km-row">
+                  <div class="km-row__top">
+                    <span class="km-row__from">{{ row.source }}</span>
+                    <span class="km-row__date">{{ utcToLocalDate(row.created_at, useUTCDate) }}</span>
+                  </div>
+                  <div class="km-row__subject">{{ row.subject }}</div>
+                  <div v-if="showEMailTo" class="km-row__to">TO: {{ row.address }}</div>
+                  <div class="km-row__meta">
+                    <span class="km-row__id">#{{ row.id }}</span>
                     <AiExtractInfo :metadata="row.metadata" compact />
-                  </template>
-                </n-thing>
+                  </div>
+                </div>
               </n-list-item>
             </n-list>
           </div>
@@ -488,67 +479,51 @@ onBeforeUnmount(() => {
               </n-button>
             </n-flex>
           </div>
-          <n-card :bordered="false" embedded v-if="curMail" class="mail-item" :title="curMail.subject"
-            style="overflow: auto; max-height: 100vh;">
+          <n-card :bordered="false" embedded v-if="curMail" class="mail-item km-detail" :title="curMail.subject"
+            style="overflow: auto; max-height: calc(100vh - 160px);">
             <MailContentRenderer :mail="curMail" :showEMailTo="showEMailTo"
               :enableUserDeleteEmail="enableUserDeleteEmail" :showReply="showReply" :showSaveS3="showSaveS3"
               :enableMailReadStatus="enableMailReadStatus" :onUpdateMailReadStatus="toggleCurrentMailUnread"
               :onDelete="deleteMail" :onReply="replyMail" :onForward="forwardMail" :onSaveToS3="saveToS3Proxy" />
           </n-card>
-          <n-card :bordered="false" embedded class="mail-item" v-else>
+          <n-card :bordered="false" embedded class="mail-item km-detail" v-else>
             <n-result status="info" :title="count === 0 ? t('emptyInbox') : t('pleaseSelectMail')">
               <template #icon>
-                <n-icon :component="InboxRound" :size="100" />
+                <n-icon :component="InboxRound" :size="72" />
               </template>
             </n-result>
           </n-card>
         </template>
       </n-split>
-      <div v-else class="mail-list-scroll">
+      <div v-else class="mail-list-scroll km-list">
         <n-list hoverable clickable>
           <n-list-item v-for="row in data" v-bind:key="row.id" @click="() => clickRow(row)"
             :class="[mailItemClass(row), { 'mail-list-unread': enableMailReadStatus && row.is_unread === 1 }]">
             <template #prefix v-if="multiActionMode">
               <n-checkbox v-model:checked="row.checked" />
             </template>
-            <n-thing class="mail-list-thing">
-              <template #header>
-                <n-ellipsis class="mail-list-title">
-                  {{ row.subject }}
-                </n-ellipsis>
-              </template>
-              <template #description>
-                <div class="mail-list-meta">
-                  <n-tag type="info">
-                    ID: {{ row.id }}
-                  </n-tag>
-                  <n-tag type="info">
-                    {{ utcToLocalDate(row.created_at, useUTCDate) }}
-                  </n-tag>
-                  <n-tag type="info">
-                    <n-ellipsis class="mail-list-meta-text">
-                      {{ showEMailTo ? "FROM: " + row.source : row.source }}
-                    </n-ellipsis>
-                  </n-tag>
-                  <n-tag v-if="showEMailTo" type="info">
-                    <n-ellipsis class="mail-list-meta-text">
-                      TO: {{ row.address }}
-                    </n-ellipsis>
-                  </n-tag>
-                  <AiExtractInfo :metadata="row.metadata" compact />
+            <div class="km-row">
+                  <div class="km-row__top">
+                    <span class="km-row__from">{{ row.source }}</span>
+                    <span class="km-row__date">{{ utcToLocalDate(row.created_at, useUTCDate) }}</span>
+                  </div>
+                  <div class="km-row__subject">{{ row.subject }}</div>
+                  <div v-if="showEMailTo" class="km-row__to">TO: {{ row.address }}</div>
+                  <div class="km-row__meta">
+                    <span class="km-row__id">#{{ row.id }}</span>
+                    <AiExtractInfo :metadata="row.metadata" compact />
+                  </div>
+                  <n-ellipsis v-if="row.text && mailListPreviewLineClampValue > 0"
+                    :line-clamp="mailListPreviewLineClampValue" class="mail-list-preview" :tooltip="false">
+                    {{ row.text }}
+                  </n-ellipsis>
                 </div>
-              </template>
-              <n-ellipsis v-if="row.text && mailListPreviewLineClampValue > 0"
-                :line-clamp="mailListPreviewLineClampValue" class="mail-list-preview" :tooltip="false">
-                {{ row.text }}
-              </n-ellipsis>
-            </n-thing>
           </n-list-item>
         </n-list>
       </div>
     </div>
     <div class="left" v-else>
-      <n-space justify="space-around" align="center" :wrap="false" style="display: flex; align-items: center;">
+      <n-space class="km-toolbar km-toolbar--mobile" justify="space-between" align="center" :wrap="false" style="display: flex; align-items: center;">
         <n-pagination v-model:page="page" v-model:page-size="pageSize" :item-count="count" simple size="small" />
         <n-switch v-model:value="autoRefresh" size="small" :round="false">
           <template #checked>
@@ -566,31 +541,22 @@ onBeforeUnmount(() => {
         <n-input v-model:value="localFilterKeyword"
           :placeholder="t('keywordQueryTip')" size="small" clearable />
       </div>
-      <div style="overflow: auto; min-height: 60vh; max-height: 100vh;">
+      <div class="km-list" style="overflow: auto; min-height: 60vh; max-height: calc(100vh - 160px);">
         <n-list hoverable clickable>
           <n-list-item v-for="row in data" v-bind:key="row.id" @click="() => clickRow(row)"
             :class="{ 'mail-list-unread': enableMailReadStatus && row.is_unread === 1 }">
-            <n-thing :title="row.subject">
-              <template #description>
-                <n-tag type="info">
-                  ID: {{ row.id }}
-                </n-tag>
-                <n-tag type="info">
-                  {{ utcToLocalDate(row.created_at, useUTCDate) }}
-                </n-tag>
-                <n-tag type="info">
-                  <n-ellipsis style="max-width: 240px;">
-                    {{ showEMailTo ? "FROM: " + row.source : row.source }}
-                  </n-ellipsis>
-                </n-tag>
-                <n-tag v-if="showEMailTo" type="info">
-                  <n-ellipsis style="max-width: 240px;">
-                    TO: {{ row.address }}
-                  </n-ellipsis>
-                </n-tag>
-                <AiExtractInfo :metadata="row.metadata" compact />
-              </template>
-            </n-thing>
+            <div class="km-row">
+                  <div class="km-row__top">
+                    <span class="km-row__from">{{ row.source }}</span>
+                    <span class="km-row__date">{{ utcToLocalDate(row.created_at, useUTCDate) }}</span>
+                  </div>
+                  <div class="km-row__subject">{{ row.subject }}</div>
+                  <div v-if="showEMailTo" class="km-row__to">TO: {{ row.address }}</div>
+                  <div class="km-row__meta">
+                    <span class="km-row__id">#{{ row.id }}</span>
+                    <AiExtractInfo :metadata="row.metadata" compact />
+                  </div>
+                </div>
           </n-list-item>
         </n-list>
       </div>
@@ -645,12 +611,10 @@ onBeforeUnmount(() => {
   z-index: 1000;
 }
 
-.overlay-dark-backgroud {
-  background-color: rgba(255, 255, 255, 0.1);
-}
-
+.overlay-dark-backgroud,
 .overlay-light-backgroud {
-  background-color: rgba(0, 0, 0, 0.1);
+  background: var(--km-accent-soft);
+  box-shadow: inset 3px 0 0 var(--km-accent);
 }
 
 .mail-item {
@@ -710,19 +674,110 @@ onBeforeUnmount(() => {
   min-width: 0;
 }
 
-.mail-list-unread :deep(.n-thing-header__title) {
-  font-weight: 700;
+.km-row {
+  display: grid;
+  gap: 2px;
+  min-width: 0;
+  width: 100%;
 }
 
-.mail-list-unread :deep(.n-thing-header__title)::before {
+.km-row__top {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: var(--km-space-3);
+  min-width: 0;
+}
+
+.km-row__from {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font-size: 13px;
+  color: var(--km-muted);
+}
+
+.km-row__date,
+.km-row__id,
+.km-row__to {
+  flex: 0 0 auto;
+  font-size: 12px;
+  color: var(--km-faint);
+  font-variant-numeric: tabular-nums;
+}
+
+.km-row__to {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.km-row__subject {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font-weight: 600;
+  color: var(--km-text);
+}
+
+.km-row__meta {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--km-space-2);
+}
+
+.mail-list-unread .km-row__subject {
+  font-weight: 800;
+}
+
+.mail-list-unread .km-row__subject::before {
   display: inline-block;
-  width: 7px;
-  height: 7px;
+  width: 8px;
+  height: 8px;
   margin-right: 8px;
   border-radius: 50%;
-  background: #2080f0;
+  background: var(--km-accent);
   content: '';
   vertical-align: middle;
+}
+
+:deep(.n-list-item) {
+  padding: var(--km-space-3) var(--km-space-4) !important;
+  border-radius: var(--km-radius-md);
+}
+
+.km-toolbar {
+  margin-bottom: var(--km-space-3);
+  padding: var(--km-space-2) var(--km-space-3);
+  border: 1px solid var(--km-line-soft);
+  border-radius: var(--km-radius-lg);
+  background: var(--km-surface);
+}
+
+.km-toolbar--mobile {
+  padding: var(--km-space-2);
+}
+
+.km-toolbar--mobile :deep(.n-pagination) {
+  flex-wrap: nowrap;
+  white-space: nowrap;
+}
+
+.km-toolbar--mobile :deep(.n-pagination .n-input) {
+  width: 44px;
+}
+
+.km-detail {
+  min-height: 60vh;
+}
+
+.km-list {
+  border: 1px solid var(--km-line-soft);
+  border-radius: var(--km-radius-lg);
+  background: var(--km-surface);
+  padding: var(--km-space-1);
 }
 
 pre {

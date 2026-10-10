@@ -20,6 +20,7 @@
 
 ### Improvements
 
+- style: |Frontend| Kimolo Mail redesign: theme tokens in `frontend/src/theme/tokens.ts`, dark theme by default, new header/footer, cleaner inbox list and message view, restyled login, user center and admin; English is the default language and English copy was fixed. No API, auth, route or stored-state changes
 - feat: |AI Extract| Improve local verification-code rules: also read the mail subject; support codes before keywords (e.g. `116352（动态验证码）`, `ABC123 is your code`), `G-123456` prefixes, grouped / spaced / zero-width-split / full-width codes, and Russian, Spanish, Portuguese, French, German, Italian, Turkish and Hebrew keywords; reject numbers longer than 8 digits, decimals and amounts, times, digits in URLs and email addresses, tracking / order / voucher codes and letters-only words; only accept keyword-less numbers in stricter positions; bound input length and remove regex backtracking risks
 
 ## v1.12.0

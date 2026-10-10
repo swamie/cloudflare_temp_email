@@ -236,6 +236,10 @@ watch([userJwt, isTelegram, () => settings.value.address], async () => {
     flex: 1 1 220px;
 }
 
+.address-row :deep(.n-button__content) {
+    gap: 6px;
+}
+
 .address-copy {
     flex: 0 0 auto;
     white-space: nowrap;

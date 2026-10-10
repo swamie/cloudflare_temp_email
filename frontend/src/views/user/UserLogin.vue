@@ -180,7 +180,7 @@ onMounted(async () => {
 
 <template>
     <div class="center">
-        <n-tabs v-model:value="tabValue" size="large" v-if="userOpenSettings.fetched" justify-content="space-evenly">
+        <n-tabs v-model:value="tabValue" type="segment" size="large" animated v-if="userOpenSettings.fetched">
             <n-tab-pane name="signin" :tab="t('login')">
                 <n-form>
                     <n-form-item-row :label="t('email')" required>
@@ -191,14 +191,14 @@ onMounted(async () => {
                             @keyup.enter="emailLogin" />
                     </n-form-item-row>
                     <Turnstile ref="loginTurnstileRef" v-if="openSettings.enableGlobalTurnstileCheck" v-model:value="loginCfToken" />
-                    <n-button @click="emailLogin" type="primary" block secondary strong>
+                    <n-button @click="emailLogin" type="primary" size="large" block strong>
                         {{ t('login') }}
                     </n-button>
                     <n-button @click="showModal = true" type="info" quaternary size="tiny">
                         {{ t('forgotPassword') }}
                     </n-button>
                     <n-divider />
-                    <n-button @click="passkeyLogin" type="primary" block secondary strong>
+                    <n-button @click="passkeyLogin" size="large" block secondary strong>
                         <template #icon>
                             <n-icon :component="KeyFilled" />
                         </template>
@@ -235,7 +235,7 @@ onMounted(async () => {
                     </n-form-item-row>
                     <Turnstile ref="signupTurnstileRef" v-if="!userOpenSettings.enableMailVerify" v-model:value="signupCfToken" />
                 </n-form>
-                <n-button @click="emailSignup" type="primary" block secondary strong>
+                <n-button @click="emailSignup" type="primary" size="large" block strong>
                     {{ t('register') }}
                 </n-button>
             </n-tab-pane>
@@ -260,7 +260,7 @@ onMounted(async () => {
                         </n-button>
                     </n-input-group>
                 </n-form-item-row>
-                <n-button @click="emailSignup" type="primary" block secondary strong>
+                <n-button @click="emailSignup" type="primary" size="large" block strong>
                     {{ t('resetPassword') }}
                 </n-button>
             </n-form>

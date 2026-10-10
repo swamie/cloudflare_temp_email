@@ -44,25 +44,25 @@ test('keeps refresh unread and supports automatic and manual state changes', asy
     await page.getByText(subject, { exact: true }).click();
     expect(await page.locator('.mail-list-unread').filter({ hasText: subject }).count()).toBe(0);
     expect(await page.locator('.n-spin-content--spinning').count()).toBe(0);
-    await expect(page.getByRole('button', { name: 'Mark as Unread' })).not.toHaveClass(/n-button--loading/);
+    await expect(page.getByRole('button', { name: 'Mark as unread' })).not.toHaveClass(/n-button--loading/);
     expect((await readResponse).ok()).toBe(true);
-    await expect(page.getByRole('button', { name: 'Mark as Unread' })).not.toHaveClass(/n-button--loading/);
+    await expect(page.getByRole('button', { name: 'Mark as unread' })).not.toHaveClass(/n-button--loading/);
 
     const unreadResponse = waitForReadUpdate(true);
-    await page.getByRole('button', { name: 'Mark as Unread' }).click();
+    await page.getByRole('button', { name: 'Mark as unread' }).click();
     expect(await page.locator('.mail-list-unread').filter({ hasText: subject }).count()).toBe(1);
     expect(await page.locator('.n-spin-content--spinning').count()).toBe(0);
-    await expect(page.getByRole('button', { name: 'Mark as Read' })).toHaveClass(/n-button--loading/);
+    await expect(page.getByRole('button', { name: 'Mark as read' })).toHaveClass(/n-button--loading/);
     expect((await unreadResponse).ok()).toBe(true);
-    await expect(page.getByRole('button', { name: 'Mark as Read' })).not.toHaveClass(/n-button--loading/);
+    await expect(page.getByRole('button', { name: 'Mark as read' })).not.toHaveClass(/n-button--loading/);
 
     const manualReadResponse = waitForReadUpdate(false);
-    await page.getByRole('button', { name: 'Mark as Read' }).click();
+    await page.getByRole('button', { name: 'Mark as read' }).click();
     expect(await page.locator('.mail-list-unread').filter({ hasText: subject }).count()).toBe(0);
     expect(await page.locator('.n-spin-content--spinning').count()).toBe(0);
-    await expect(page.getByRole('button', { name: 'Mark as Unread' })).toHaveClass(/n-button--loading/);
+    await expect(page.getByRole('button', { name: 'Mark as unread' })).toHaveClass(/n-button--loading/);
     expect((await manualReadResponse).ok()).toBe(true);
-    await expect(page.getByRole('button', { name: 'Mark as Unread' })).not.toHaveClass(/n-button--loading/);
+    await expect(page.getByRole('button', { name: 'Mark as unread' })).not.toHaveClass(/n-button--loading/);
 
     const updatedList = await request.get(`${WORKER_URL}/api/mails?limit=10&offset=0`, {
       headers: { Authorization: `Bearer ${jwt}` },

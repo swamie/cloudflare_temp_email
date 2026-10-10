@@ -1,4 +1,5 @@
 import {
+  createLocale,
   dateDeDE,
   dateEnUS,
   dateEsAR,
@@ -14,6 +15,15 @@ import {
 } from 'naive-ui'
 
 import type { NDateLocale, NLocale } from 'naive-ui'
+
+// Naive UI's English defaults say "Please Input" / "Please Select"; inputs here all have labels.
+const enKimolo = createLocale({
+  Input: { placeholder: '' },
+  InputNumber: { placeholder: '' },
+  Select: { placeholder: 'Select' },
+  Cascader: { placeholder: 'Select' },
+  Pagination: { goto: 'Go to' },
+}, enUS)
 
 type NaiveLocaleConfig = {
   locale: NLocale
@@ -40,7 +50,7 @@ export const LOCALE_REGISTRY = [
     locale: 'en',
     label: 'English',
     browserMatches: ['en'],
-    naive: { locale: enUS, dateLocale: dateEnUS },
+    naive: { locale: enKimolo, dateLocale: dateEnUS },
     turnstileLocale: 'en',
   },
   {

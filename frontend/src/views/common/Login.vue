@@ -260,7 +260,7 @@ onMounted(async () => {
         <n-alert v-if="userSettings.user_email" :show-icon="false" :bordered="false" closable>
             <span>{{ t('bindUserInfo') }}</span>
         </n-alert>
-        <n-tabs v-if="openSettings.fetched" v-model:value="tabValue" size="large" justify-content="space-evenly">
+        <n-tabs v-if="openSettings.fetched" v-model:value="tabValue" type="segment" size="large" animated>
             <n-tab-pane name="signin" :tab="loginAndBindTag">
                 <n-form>
                     <div v-if="loginMethod === 'password'">
@@ -290,13 +290,13 @@ onMounted(async () => {
                         </n-button>
                     </div>
 
-                    <n-button @click="login" :loading="loading" type="primary" block secondary strong>
+                    <n-button @click="login" :loading="loading" type="primary" size="large" block strong>
                         <template #icon>
                             <n-icon :component="EmailOutlined" />
                         </template>
                         {{ loginAndBindTag }}
                     </n-button>
-                    <n-button v-if="showNewAddressTab" @click="tabValue = 'register'" block secondary strong>
+                    <n-button v-if="showNewAddressTab" @click="tabValue = 'register'" size="large" block secondary strong>
                         <template #icon>
                             <n-icon :component="NewLabelOutlined" />
                         </template>
@@ -357,7 +357,7 @@ onMounted(async () => {
                             </div>
                         </n-form-item-row>
                         <Turnstile v-model:value="cfToken" />
-                        <n-button type="primary" block secondary strong @click="newEmail" :loading="loading"
+                        <n-button type="primary" size="large" block strong @click="newEmail" :loading="loading"
                             :disabled="subdomainMode === 'custom' && !customSubdomain.trim()">
                             <template #icon>
                                 <n-icon :component="NewLabelOutlined" />
@@ -398,6 +398,16 @@ onMounted(async () => {
 
 .n-form .n-button {
     margin-top: 10px;
+}
+
+:deep(.n-tabs-nav) {
+    margin-bottom: var(--km-space-4);
+}
+
+.n-form p {
+    margin: 0 0 var(--km-space-2);
+    color: var(--km-muted);
+    font-size: 14px;
 }
 
 .redeem-entry-section {

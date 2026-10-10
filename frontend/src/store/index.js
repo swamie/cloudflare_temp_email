@@ -6,7 +6,7 @@ import {
 
 export const useGlobalState = createGlobalState(
     () => {
-        const isDark = useDark()
+        const isDark = useDark({ initialValue: 'dark' })
         const toggleDark = useToggle(isDark)
         const loading = ref(false);
         const announcement = useLocalStorage('announcement', '');
@@ -90,7 +90,7 @@ export const useGlobalState = createGlobalState(
         const adminTab = useSessionStorage('adminTab', "account");
         const adminMailTabAddress = ref("");
         const adminSendBoxTabAddress = ref("");
-        const mailboxSplitSize = useStorage('mailboxSplitSize', 0.25);
+        const mailboxSplitSize = useStorage('mailboxSplitSize', 0.34);
         const mailListView = useStorage('mailListView', false);
         const mailListPreviewLineClamp = useStorage('mailListPreviewLineClamp', 2);
         const useIframeShowMail = useStorage('useIframeShowMail', false);
