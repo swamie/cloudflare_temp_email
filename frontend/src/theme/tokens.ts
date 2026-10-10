@@ -117,6 +117,7 @@ export const themeOverrides = (mode: Mode): GlobalThemeOverrides => {
     List: { color: 'transparent', colorHover: c.accentSoft, borderColor: c.lineSoft },
     Tabs: { tabFontWeightActive: '700', tabTextColorActiveCard: c.accent, tabColor: 'transparent', tabBorderColor: c.lineSoft, colorSegment: c.raised, tabColorSegment: c.segment, tabBorderRadius: radius.md },
     Tag: { borderRadius: radius.sm },
+    Checkbox: { borderRadius: '4px' },
     Switch: { railColor: c.switchOff, railColorActive: c.switchOn },
     Alert: { borderRadius: radius.md },
     Dialog: { borderRadius: radius.lg },
