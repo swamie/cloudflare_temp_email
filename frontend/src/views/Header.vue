@@ -6,7 +6,7 @@ import { useRoute, useRouter, RouterLink } from 'vue-router'
 import { useIsMobile } from '../utils/composables'
 import {
     DarkModeFilled, LightModeFilled, MenuFilled,
-    AdminPanelSettingsFilled, MonitorHeartFilled,
+    MonitorHeartFilled,
     KeyboardArrowDownOutlined
 } from '@vicons/material'
 import { Envelope, Language, User } from '@vicons/fa'
@@ -23,7 +23,7 @@ const message = useMessage()
 const notification = useNotification()
 
 const {
-    toggleDark, isDark, isTelegram, showAdminPage,
+    toggleDark, isDark, isTelegram,
     showAuth, auth, loading, openSettings, preferredLocale, userSettings
 } = useGlobalState()
 const route = useRoute()
@@ -148,29 +148,6 @@ const menuOptions = computed(() => [
             {
                 text: true,
                 size: "small",
-                type: menuValue.value == "admin" ? "primary" : "default",
-                style: "width: 100%",
-                onClick: async () => {
-                    loading.value = true;
-                    await router.push(getRouterPathWithLang('/admin', locale.value));
-                    loading.value = false;
-                    showMobileMenu.value = false;
-                }
-            },
-            {
-                default: () => t('admin'),
-                icon: () => h(NIcon, { component: AdminPanelSettingsFilled }),
-            }
-        ),
-        show: showAdminPage.value,
-        key: "admin"
-    },
-    {
-        label: () => h(
-            NButton,
-            {
-                text: true,
-                size: "small",
                 style: "width: 100%",
                 onClick: () => { toggleDark(); showMobileMenu.value = false; }
             },
@@ -211,24 +188,8 @@ useHead({
     ]
 });
 
-const logoClickCount = ref(0);
 const logoClick = async () => {
-    if (route.path.includes("admin")) {
-        logoClickCount.value = 0;
-        return;
-    }
-    if (logoClickCount.value >= 5) {
-        logoClickCount.value = 0;
-        message.info("Change to admin Page");
-        loading.value = true;
-        await router.push(getRouterPathWithLang('/admin', locale.value));
-        loading.value = false;
-    } else {
-        logoClickCount.value++;
-    }
-    if (logoClickCount.value > 0) {
-        message.info(`Click ${5 - logoClickCount.value + 1} times to enter the admin page`);
-    }
+    await router.push(getRouterPathWithLang('/', locale.value));
 }
 
 onMounted(async () => {
