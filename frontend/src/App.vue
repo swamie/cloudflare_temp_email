@@ -101,7 +101,6 @@ onMounted(async () => {
   <n-config-provider :locale="localeConfig.locale" :date-locale="localeConfig.dateLocale" :theme="theme"
     :theme-overrides="overrides">
     <n-global-style />
-    <div class="km-backdrop" aria-hidden="true"></div>
     <n-spin description="Loading…" :show="loading" class="km-spin">
       <n-notification-provider container-style="margin-top: 64px;">
         <n-message-provider container-style="margin-top: 16px;">
@@ -134,18 +133,6 @@ onMounted(async () => {
 </style>
 
 <style scoped>
-.km-backdrop {
-  position: fixed;
-  inset: 0;
-  z-index: 0;
-  pointer-events: none;
-  background:
-    radial-gradient(40rem 30rem at 85% -10%, var(--km-glow), transparent 70%),
-    linear-gradient(var(--km-grid) 1px, transparent 1px) 0 0 / 56px 56px,
-    linear-gradient(90deg, var(--km-grid) 1px, transparent 1px) 0 0 / 56px 56px;
-  mask-image: linear-gradient(to bottom, #000 0, #000 40%, transparent 90%);
-}
-
 .km-spin {
   position: relative;
   z-index: 1;

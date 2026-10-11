@@ -1494,8 +1494,8 @@ export const MESSAGE_REGISTRY = {
       "en": "User center",
       "zh": "用户中心"
     },
-    "heroTitle": { "en": "Your inbox, on demand.", "zh": "随取随用的邮箱。" },
-    "heroSubtitle": { "en": "Create a private address in seconds, or log in to one you already have.", "zh": "几秒钟创建一个私密地址，或登录已有的邮箱。" }
+    "heroTitle": { "en": "Temporary email on kimolo.dev", "zh": "kimolo.dev 临时邮箱" },
+    "heroSubtitle": { "en": "Make an address, read what arrives, delete it when you're done.", "zh": "创建地址，查看收到的邮件，用完即删。" }
   },
   "views.admin.SendBox": {
     "query": {
