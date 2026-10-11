@@ -28,13 +28,6 @@ h1, h2, h3, h4,
   outline-offset: 2px;
 }
 
-/* buttons and inputs: larger, rounder, visible focus */
-.n-button:focus-visible,
-.n-input.n-input--focus,
-.n-base-selection.n-base-selection--focus {
-  box-shadow: 0 0 0 3px var(--km-accent-soft);
-}
-
 .n-switch {
   margin-left: 10px;
   margin-right: 10px;
@@ -52,7 +45,7 @@ h1, h2, h3, h4,
 .n-modal .n-card,
 .n-dialog {
   border: 1px solid var(--km-line);
-  box-shadow: 0 24px 64px rgba(0, 0, 0, 0.35);
+  box-shadow: 0 12px 32px rgba(0, 0, 0, 0.3);
 }
 
 /* top-level tabs (inbox, user center, admin): underline bar */

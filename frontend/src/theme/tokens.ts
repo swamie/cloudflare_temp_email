@@ -22,8 +22,6 @@ export const palette = {
     warning: '#f9b64f',
     success: '#6ed889',
     info: '#a6a3f7',
-    glow: 'rgba(150, 70, 255, 0.22)',
-    grid: 'rgba(205, 170, 255, 0.06)',
     segment: '#3c3153',
     switchOn: '#7a4cc0',
     switchOff: '#3c3153',
@@ -49,8 +47,6 @@ export const palette = {
     warning: '#be7100',
     success: '#1c8742',
     info: '#6358ba',
-    glow: 'rgba(150, 90, 230, 0.10)',
-    grid: 'rgba(110, 60, 180, 0.05)',
     segment: '#ffffff',
     switchOn: '#8044cb',
     switchOff: '#8d86a0',
@@ -61,7 +57,7 @@ export const palette = {
 
 export type Mode = keyof typeof palette
 
-export const radius = { sm: '8px', md: '12px', lg: '16px', pill: '999px' }
+export const radius = { sm: '6px', md: '10px', lg: '14px', pill: '999px' }
 export const space = { 1: '4px', 2: '8px', 3: '12px', 4: '16px', 5: '24px', 6: '32px', 7: '48px' }
 export const font = {
   display: "'Bricolage Grotesque', system-ui, sans-serif",
@@ -118,6 +114,8 @@ export const themeOverrides = (mode: Mode): GlobalThemeOverrides => {
     Tabs: { tabFontWeightActive: '700', tabTextColorActiveCard: c.accent, tabColor: 'transparent', tabBorderColor: c.lineSoft, colorSegment: c.raised, tabColorSegment: c.segment, tabBorderRadius: radius.md },
     Tag: { borderRadius: radius.sm },
     Checkbox: { borderRadius: '4px' },
+    Input: { boxShadowFocus: 'none' },
+    InternalSelection: { boxShadowFocus: 'none', boxShadowActive: 'none' },
     Switch: { railColor: c.switchOff, railColorActive: c.switchOn },
     Alert: { borderRadius: radius.md },
     Dialog: { borderRadius: radius.lg },
