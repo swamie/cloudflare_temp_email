@@ -1,6 +1,6 @@
 <script setup>
 import { ref, h, onMounted, watch, computed } from 'vue';
-import { NBadge, useMessage } from 'naive-ui'
+import { NBadge, NSwitch, useMessage } from 'naive-ui'
 import { useScopedI18n } from '@/i18n/app'
 
 import { useGlobalState } from '../../store'
@@ -124,6 +124,19 @@ const resetPassword = async () => {
     }
 }
 
+const setKeep = async (row, keep) => {
+    try {
+        await api.fetch(`/admin/address/${row.id}/keep`, {
+            method: 'POST',
+            body: JSON.stringify({ keep })
+        });
+        row.keep = keep ? 1 : 0;
+        message.success(keep ? t('permanentOn') : t('permanentOff'));
+    } catch (error) {
+        message.error(error.message || "error");
+    }
+}
+
 // Multi-action mode functions
 const multiActionSelectAll = () => {
     checkedRowKeys.value = data.value.map(item => item.id);
@@ -186,8 +199,21 @@ const executeBatchOperation = async ({
     }
 }
 
+const multiActionSetKeep = async (keep) => {
+    await executeBatchOperation({
+        shouldSkip: (address) => !!address.keep === keep,
+        apiCall: (id) => api.fetch(`/admin/address/${id}/keep`, {
+            method: 'POST',
+            body: JSON.stringify({ keep })
+        }),
+        title: (keep ? t('makePermanent') : t('removePermanent')) + ' ' + t('success'),
+        operationName: 'SetKeep'
+    });
+}
+
 const multiActionDeleteAccounts = async () => {
     await executeBatchOperation({
+        shouldSkip: (address) => !!address.keep,
         apiCall: (id) => api.adminDeleteAddress(id),
         title: t('multiDelete') + ' ' + t('success'),
         operationName: 'Delete'
@@ -196,7 +222,7 @@ const multiActionDeleteAccounts = async () => {
 
 const multiActionClearInbox = async () => {
     await executeBatchOperation({
-        shouldSkip: (address) => address.mail_count <= 0,
+        shouldSkip: (address) => !!address.keep || address.mail_count <= 0,
         apiCall: (id) => api.fetch(`/admin/clear_inbox/${id}`, {
             method: 'DELETE'
         }),
@@ -207,7 +233,7 @@ const multiActionClearInbox = async () => {
 
 const multiActionClearSentItems = async () => {
     await executeBatchOperation({
-        shouldSkip: (address) => address.send_count <= 0,
+        shouldSkip: (address) => !!address.keep || address.send_count <= 0,
         apiCall: (id) => api.fetch(`/admin/clear_sent_items/${id}`, {
             method: 'DELETE'
         }),
@@ -270,6 +296,20 @@ const columns = computed(() => [
         key: "name",
         sorter: true,
         sortOrder: sortBy.value === 'name' ? sortOrder.value : false
+    },
+    {
+        title: t('permanent'),
+        key: "keep",
+        minWidth: 120,
+        sorter: true,
+        sortOrder: sortBy.value === 'keep' ? sortOrder.value : false,
+        render(row) {
+            return h(NSwitch, {
+                value: !!row.keep,
+                size: "small",
+                'onUpdate:value': (value) => setKeep(row, value)
+            })
+        }
     },
     {
         title: t('created_at'),
@@ -424,7 +464,7 @@ const columns = computed(() => [
                                         },
                                         { default: () => t('clearInbox') }
                                     ),
-                                    show: row.mail_count > 0
+                                    show: !row.keep && row.mail_count > 0
                                 },
                                 {
                                     label: () => h(NButton,
@@ -437,7 +477,7 @@ const columns = computed(() => [
                                         },
                                         { default: () => t('clearSentItems') }
                                     ),
-                                    show: row.send_count > 0
+                                    show: !row.keep && row.send_count > 0
                                 },
                                 {
                                     label: () => h(NButton,
@@ -462,7 +502,8 @@ const columns = computed(() => [
                                             }
                                         },
                                         { default: () => t('delete') }
-                                    )
+                                    ),
+                                    show: !row.keep
                                 }
                             ]
                         }
@@ -536,6 +577,12 @@ onMounted(async () => {
             </n-button>
             <n-button @click="multiActionUnselectAll" tertiary>
                 {{ t('unselectAll') }}
+            </n-button>
+            <n-button @click="multiActionSetKeep(true)" tertiary type="primary">
+                {{ t('makePermanent') }}
+            </n-button>
+            <n-button @click="multiActionSetKeep(false)" tertiary>
+                {{ t('removePermanent') }}
             </n-button>
             <n-popconfirm @positive-click="multiActionDeleteAccounts">
                 <template #trigger>

@@ -3,7 +3,7 @@ import { Jwt } from 'hono/utils/jwt'
 
 import i18n from '../i18n'
 import { getBooleanValue } from '../utils'
-import { newAddress, handleListQuery } from '../common'
+import { newAddress, handleListQuery, isPermanentAddress } from '../common'
 
 const listAddresses = async (c: Context<HonoCustomType>) => {
     const { limit, offset, query, sort_by, sort_order } = c.req.query();
@@ -15,6 +15,7 @@ const listAddresses = async (c: Context<HonoCustomType>) => {
         'source_meta': 'a.source_meta',
         'mail_count': 'mail_count',
         'send_count': 'send_count',
+        'keep': 'a.keep',
     };
     const sortColumn = Object.hasOwn(allowedSortColumns, sort_by) ? allowedSortColumns[sort_by] : 'a.id';
     const sortDirection = sort_order === 'ascend' ? 'asc' : 'desc';
@@ -70,6 +71,9 @@ const createNewAddress = async (c: Context<HonoCustomType>) => {
 const deleteAddress = async (c: Context<HonoCustomType>) => {
     const msgs = i18n.getMessagesbyContext(c);
     const { id } = c.req.param();
+    if (await isPermanentAddress(c, id)) {
+        return c.text(msgs.AddressIsPermanentMsg, 400)
+    }
     // single batch runs as one transaction: rows keyed by address name are
     // deleted first and the address row last, so the name subqueries still
     // resolve and a failed statement rolls back the whole deletion
@@ -107,6 +111,9 @@ const deleteAddress = async (c: Context<HonoCustomType>) => {
 const clearInbox = async (c: Context<HonoCustomType>) => {
     const msgs = i18n.getMessagesbyContext(c);
     const { id } = c.req.param();
+    if (await isPermanentAddress(c, id)) {
+        return c.text(msgs.AddressIsPermanentMsg, 400)
+    }
     const { success: mailSuccess } = await c.env.DB.prepare(
         `DELETE FROM raw_mails WHERE address IN`
         + ` (select name from address where id = ?) `
@@ -120,6 +127,9 @@ const clearInbox = async (c: Context<HonoCustomType>) => {
 const clearSentItems = async (c: Context<HonoCustomType>) => {
     const msgs = i18n.getMessagesbyContext(c);
     const { id } = c.req.param();
+    if (await isPermanentAddress(c, id)) {
+        return c.text(msgs.AddressIsPermanentMsg, 400)
+    }
     const { success: sendboxSuccess } = await c.env.DB.prepare(
         `DELETE FROM sendbox WHERE address IN`
         + ` (select name from address where id = ?) `
@@ -128,6 +138,22 @@ const clearSentItems = async (c: Context<HonoCustomType>) => {
         return c.text(msgs.OperationFailedMsg, 500)
     }
     return c.json({ success: sendboxSuccess });
+};
+
+const setKeep = async (c: Context<HonoCustomType>) => {
+    const msgs = i18n.getMessagesbyContext(c);
+    const { id } = c.req.param();
+    const { keep } = await c.req.json();
+    if (typeof keep !== 'boolean') {
+        return c.text(msgs.RequiredFieldMsg, 400)
+    }
+    const { meta } = await c.env.DB.prepare(
+        `UPDATE address SET keep = ? WHERE id = ?`
+    ).bind(keep ? 1 : 0, id).run();
+    if (!meta.changes) {
+        return c.text(msgs.AddressNotFoundMsg, 404)
+    }
+    return c.json({ success: true, keep })
 };
 
 const showPassword = async (c: Context<HonoCustomType>) => {
@@ -164,5 +190,5 @@ const resetPassword = async (c: Context<HonoCustomType>) => {
 
 export default {
     listAddresses, createNewAddress, deleteAddress, clearInbox, clearSentItems,
-    showPassword, resetPassword
+    showPassword, resetPassword, setKeep
 };

@@ -1648,6 +1648,26 @@ export const MESSAGE_REGISTRY = {
     }
   },
   "views.admin.Account": {
+    "permanent": {
+      "en": "Permanent",
+      "zh": "永久"
+    },
+    "permanentOn": {
+      "en": "Permanent: never deleted or cleared",
+      "zh": "已设为永久, 不会被删除或清空"
+    },
+    "permanentOff": {
+      "en": "No longer permanent",
+      "zh": "已取消永久"
+    },
+    "makePermanent": {
+      "en": "Make permanent",
+      "zh": "设为永久"
+    },
+    "removePermanent": {
+      "en": "Remove permanent",
+      "zh": "取消永久"
+    },
     "actions": {
       "en": "Actions",
       "zh": "操作"

@@ -55,6 +55,7 @@ const messages: LocaleMessages = {
     PasswordLoginDisabledMsg: "密码登录已禁用",
     EmailPasswordRequiredMsg: "邮箱和密码不能为空",
     AddressNotFoundMsg: "邮箱地址不存在",
+    AddressIsPermanentMsg: "该邮箱已设为永久保留, 请先在管理后台取消永久",
 
     // Common messages (merged similar ones)
     OperationFailedMsg: "操作失败",
