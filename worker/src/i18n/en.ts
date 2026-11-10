@@ -55,6 +55,7 @@ const messages: LocaleMessages = {
     PasswordLoginDisabledMsg: "Password login is disabled",
     EmailPasswordRequiredMsg: "Email and password are required",
     AddressNotFoundMsg: "Address not found",
+    AddressIsPermanentMsg: "This address is permanent. Turn off Permanent in admin first.",
 
     // Common messages (merged similar ones)
     OperationFailedMsg: "Operation failed",

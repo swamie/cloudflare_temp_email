@@ -30,6 +30,7 @@ api.delete('/admin/clear_inbox/:id', address_api.clearInbox)
 api.delete('/admin/clear_sent_items/:id', address_api.clearSentItems)
 api.get('/admin/show_password/:id', address_api.showPassword)
 api.post('/admin/address/:id/reset_password', address_api.resetPassword)
+api.post('/admin/address/:id/keep', address_api.setKeep)
 
 // mail api
 api.get('/admin/mails', admin_mail_api.getMails)

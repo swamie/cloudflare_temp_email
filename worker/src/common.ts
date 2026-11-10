@@ -517,7 +517,7 @@ export const cleanup = async (
             await batchDeleteAddressWithData(
                 c,
                 `id IN (`
-                + `SELECT id FROM address WHERE updated_at < datetime('now', '-${cleanDays} day') `
+                + `SELECT id FROM address WHERE updated_at < datetime('now', '-${cleanDays} day') AND coalesce(keep, 0) = 0 `
                 + `ORDER BY updated_at, id LIMIT ${cleanupBatchSize})`
             )
             break;
@@ -525,14 +525,14 @@ export const cleanup = async (
             await batchDeleteAddressWithData(
                 c,
                 `id IN (`
-                + `SELECT id FROM address WHERE created_at < datetime('now', '-${cleanDays} day') `
+                + `SELECT id FROM address WHERE created_at < datetime('now', '-${cleanDays} day') AND coalesce(keep, 0) = 0 `
                 + `ORDER BY created_at, id LIMIT ${cleanupBatchSize})`
             )
             break;
         case "unboundAddress":
             await batchDeleteAddressWithData(
                 c,
-                `id NOT IN (SELECT address_id FROM users_address) AND created_at < datetime('now', '-${cleanDays} day')`
+                `id NOT IN (SELECT address_id FROM users_address) AND created_at < datetime('now', '-${cleanDays} day') AND coalesce(keep, 0) = 0`
             )
             break;
         case "mails":
@@ -540,6 +540,7 @@ export const cleanup = async (
                 DELETE FROM raw_mails WHERE id IN (
                     SELECT id FROM raw_mails
                     WHERE created_at < datetime('now', ?)
+                    AND NOT EXISTS (SELECT 1 FROM address a WHERE a.name = raw_mails.address AND a.keep = 1)
                     ORDER BY created_at, id
                     LIMIT ?
                 )`
@@ -556,6 +557,7 @@ export const cleanup = async (
                 DELETE FROM sendbox WHERE id IN (
                     SELECT id FROM sendbox
                     WHERE created_at < datetime('now', ?)
+                    AND NOT EXISTS (SELECT 1 FROM address a WHERE a.name = sendbox.address AND a.keep = 1)
                     ORDER BY created_at, id
                     LIMIT ?
                 )`
@@ -565,7 +567,7 @@ export const cleanup = async (
             // Delete addresses that have no emails and were created more than N days ago
             await batchDeleteAddressWithData(
                 c,
-                `name NOT IN (SELECT DISTINCT address FROM raw_mails WHERE address IS NOT NULL) AND created_at < datetime('now', '-${cleanDays} day')`
+                `name NOT IN (SELECT DISTINCT address FROM raw_mails WHERE address IS NOT NULL) AND created_at < datetime('now', '-${cleanDays} day') AND coalesce(keep, 0) = 0`
             )
             break;
         default:
@@ -606,6 +608,15 @@ const batchDeleteAddressWithData = async (
 }
 
 
+export const isPermanentAddress = async (
+    c: Context<HonoCustomType>, address_id: number | string
+): Promise<boolean> => {
+    const keep = await c.env.DB.prepare(
+        `SELECT keep FROM address WHERE id = ?`
+    ).bind(address_id).first<number | null>("keep");
+    return keep === 1;
+}
+
 export const deleteAddressWithData = async (
     c: Context<HonoCustomType>,
     address: string | undefined | null,
@@ -631,6 +642,9 @@ export const deleteAddressWithData = async (
     // check address again
     if (!address || !address_id) {
         throw new Error(msgs.AddressNotFoundMsg);
+    }
+    if (await isPermanentAddress(c, address_id)) {
+        throw new Error(msgs.AddressIsPermanentMsg);
     }
     // unbind telegram
     await unbindTelegramByAddress(c, address);

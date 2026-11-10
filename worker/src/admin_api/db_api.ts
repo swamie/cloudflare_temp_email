@@ -26,6 +26,7 @@ CREATE TABLE IF NOT EXISTS address (
     name TEXT UNIQUE,
     password TEXT,
     source_meta TEXT,
+    keep INTEGER DEFAULT 0,
     created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
     updated_at DATETIME DEFAULT CURRENT_TIMESTAMP
 );
@@ -142,6 +143,26 @@ CREATE TABLE IF NOT EXISTS redeem_codes (
 CREATE INDEX IF NOT EXISTS idx_redeem_codes_type ON redeem_codes(redeem_type);
 `
 
+// Permanent addresses (address.keep = 1): the database itself ignores deletes of the address, its mails,
+// its sent items and its account binding, whatever code path asks. Each trigger is its own statement because
+// DB.exec() splits on newlines and the init queries are split on ";".
+const KEEP_TRIGGERS = [
+    `CREATE TRIGGER IF NOT EXISTS address_keep_row BEFORE DELETE ON address WHEN OLD.keep = 1 BEGIN SELECT RAISE(IGNORE); END`,
+    `CREATE TRIGGER IF NOT EXISTS address_keep_mails BEFORE DELETE ON raw_mails WHEN EXISTS (SELECT 1 FROM address WHERE name = OLD.address AND keep = 1) BEGIN SELECT RAISE(IGNORE); END`,
+    `CREATE TRIGGER IF NOT EXISTS address_keep_sent BEFORE DELETE ON sendbox WHEN EXISTS (SELECT 1 FROM address WHERE name = OLD.address AND keep = 1) BEGIN SELECT RAISE(IGNORE); END`,
+    `CREATE TRIGGER IF NOT EXISTS address_keep_owner BEFORE DELETE ON users_address WHEN EXISTS (SELECT 1 FROM address WHERE id = OLD.address_id AND keep = 1) BEGIN SELECT RAISE(IGNORE); END`,
+];
+
+const ensureKeep = async (c: Context<HonoCustomType>) => {
+    const tableInfo = await c.env.DB.prepare(`PRAGMA table_info(address)`).all();
+    if (!tableInfo.results?.some((col: any) => col.name === 'keep')) {
+        await c.env.DB.exec(`ALTER TABLE address ADD COLUMN keep INTEGER DEFAULT 0;`);
+    }
+    for (const sql of KEEP_TRIGGERS) {
+        await c.env.DB.prepare(sql).run();
+    }
+}
+
 export default {
     initialize: async (c: Context<HonoCustomType>) => {
         // remove all \r and \n characters from the query string
@@ -151,6 +172,7 @@ export default {
             .map((query) => query.trim())
             .join(";\n");
         await c.env.DB.exec(query);
+        await ensureKeep(c);
 
         const version = await utils.getSetting(c, CONSTANTS.DB_VERSION_KEY);
         if (version) {
@@ -230,6 +252,7 @@ export default {
                 .map((query) => query.trim())
                 .join(";\n");
             await c.env.DB.exec(query);
+            await ensureKeep(c);
             // Update the version in the settings table
             await utils.saveSetting(c, CONSTANTS.DB_VERSION_KEY, CONSTANTS.DB_VERSION);
             return c.json({
